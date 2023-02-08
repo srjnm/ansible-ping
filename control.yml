@@ -1,0 +1,5 @@
+---
+- hosts: managed
+  tasks:
+    - name: check if managed nodes are running
+      ansible.builtin.ping:

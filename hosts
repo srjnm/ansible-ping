@@ -1,0 +1,18 @@
+[control]
+localhost
+[control:vars]
+ansible_user=control
+ansible_password=passwd
+ansible_connection=ssh
+ansible_port=50000
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+
+[managed]
+10.20.0.5
+10.20.0.3
+10.20.0.4
+[managed:vars]
+ansible_user=managed
+ansible_password=passwd
+ansible_connection=ssh
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'

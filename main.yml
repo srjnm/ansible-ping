@@ -1,0 +1,54 @@
+---
+- hosts: control
+  tasks:
+    - name: check if control node is running
+      ansible.builtin.ping:
+
+    - name: check directory
+      stat:
+        path: /home/control/ansible
+      register: ansible_folder
+
+    - name: echo if directory already existed
+      debug:
+        msg: "the ansible directory is already existed"
+      when: ansible_folder.stat.exists
+
+    - name: create directory if not exists
+      file:
+        path:  /home/control/ansible
+        state: directory
+        mode: 0777
+        owner: control
+      when: ansible_folder.stat.exists == false
+
+
+    - name: copy hosts file to control node
+      ansible.builtin.copy:
+        src: ./hosts
+        dest: /home/control/ansible/hosts
+        owner: control
+        mode: '777'
+
+    - name: copy config file to control node
+      ansible.builtin.copy:
+        src: ./ansible.cfg
+        dest: /home/control/ansible/ansible.cfg
+        owner: control
+        mode: '777'
+    
+    - name: copy playbook to control node
+      ansible.builtin.copy:
+        src: ./control.yml
+        dest: /home/control/ansible/control.yml
+        owner: control
+        mode: '777'
+
+    - name: run the playbook
+      ansible.builtin.shell: |
+        ansible-playbook /home/control/ansible/control.yml -i /home/control/ansible/hosts
+      register: ping_out
+
+    - name: display ansible output
+      ansible.builtin.debug:
+        msg: "{{ ping_out }}"
